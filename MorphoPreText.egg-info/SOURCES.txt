@@ -1,0 +1,16 @@
+LICENSE
+README.md
+setup.py
+MorphoPreText.egg-info/PKG-INFO
+MorphoPreText.egg-info/SOURCES.txt
+MorphoPreText.egg-info/dependency_links.txt
+MorphoPreText.egg-info/requires.txt
+MorphoPreText.egg-info/top_level.txt
+morphopretext/Dictionaries_En.py
+morphopretext/Dictionaries_Fa.py
+morphopretext/__init__.py
+morphopretext/character_word_count.py
+morphopretext/english_text_preprocessor.py
+morphopretext/main.py
+morphopretext/persian_text_preprocessor.py
+morphopretext/separate_train_test_validation.py
