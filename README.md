@@ -1,179 +1,169 @@
-# English and Persian Text Preprocessing Pipeline
+# MorphoPreText
 
-This project provides a robust preprocessing pipeline for English and Persian text, designed for a variety of Natural Language Processing (NLP) tasks such as translation, sentiment analysis, named entity recognition (NER), and more. It includes tools for data cleaning, normalization, frequency analysis, and dataset preparation for machine learning models.
+MorphoPreText is a Python package designed for preprocessing English and Persian text. This library provides tools for text normalization, tokenization, cleaning, and other preprocessing tasks that are essential for Natural Language Processing (NLP) applications. The package supports both English and Persian languages with specific modules tailored to the linguistic nuances of each language.
 
 ---
 
 ## Features
 
+- **Multilingual Support**: Handles preprocessing for both English and Persian text.
+- **Text Normalization**: Includes dictionaries for standardizing characters, punctuation, and text structure.
+- **Stopword Removal**: Integrated with customizable stopword lists for both languages.
+- **Spelling Correction**: Automatically corrects misspelled words (English only).
+- **Emoji Handling**: Options to remove, replace, or analyze emoji sentiments.
+- **Date Handling**: Converts Persian dates to the Gregorian calendar format.
+- **Customizable Tasks**: Configurations for different NLP use cases such as sentiment analysis, named entity recognition (NER), and more.
+- **Predefined Task Configurations**: Provides task-specific preprocessing setups for translation, summarization, topic modeling, and more.
 - **Task-Specific Preprocessing**:
   - Supports tasks like `translation`, `sentiment`, `ner`, `spam_detection`, `topic_modeling`, and `summarization`.
 - **Language-Specific Preprocessing**:
-  - Persian: Diacritic removal, numeral normalization, punctuation handling.
-  - English: Spelling correction, contractions expansion, lemmatization.
-- **Dataset Splitting**:
-  - Splits data into train, validation, and test sets with configurable ratios.
-- **Frequency Analysis**:
-  - Word and character frequency analysis with export to CSV and Excel files.
+  - **Persian**: Diacritic removal, numeral normalization, punctuation handling, Persian stopword removal, half-space handling.
+  - **English**: Spelling correction, contractions expansion, lemmatization, stemming, and punctuation cleaning.
+- **Text Cleaning**:
+  - Removes URLs, HTML tags, emails, hashtags, mentions, and extra spaces.
+- **Custom Dictionary Support**:
+  - Includes dictionaries for standardizing text, handling special characters, and expanding contractions.
+- **Flexible Emoji Processing**:
+  - Provides options to analyze emoji sentiment, replace emojis with placeholders, or remove them entirely.
+- **Efficient Column-Wide Processing**:
+  - Capable of processing entire pandas DataFrame columns for large-scale text datasets.
+- **Persian-Specific Date Handling**:
+  - Converts Persian calendar dates into the Gregorian calendar format seamlessly.
 
 ---
 
-## Prerequisites
+## Installation
 
-### Python Version
-- Requires Python 3.8 or higher.
+MorphoPreText is available on PyPI and can be installed using pip:
 
-### Install Dependencies
-Install required libraries:
 ```bash
-pip install -r requirements.txt
+pip install morphopretext
 ```
-Download the SpaCy model for English processing:
+
+Alternatively, you can install the package from the source:
+
 ```bash
-python -m spacy download en_core_web_sm
+# Clone the repository
+$ git clone https://github.com/ghaskari/MorphoPreText.git
+
+# Navigate to the project directory
+$ cd MorphoPreText
+
+# Install the package
+$ pip install .
+
+# Install dependencies
+$ pip install -r requirements.txt
 ```
 
 ---
 
 ## Usage
 
-### Step 1: Preprocess Data
-Run the `main.py` script to preprocess data for a specific task. Example for the **translation task**:
-```bash
-python main.py --task translation --input translation_data.csv --output output_directory
-```
+### What Can You Do With MorphoPreText?
 
-#### Arguments:
-- `--task`: The NLP task (`translation`, `sentiment`, `ner`, etc.).
-- `--input`: Path to the input CSV file.
-- `--output`: Directory to save the cleaned data.
+MorphoPreText provides robust preprocessing tools for handling diverse text preprocessing needs:
 
----
+- **Clean and Normalize Text**: Standardize characters, remove extra spaces, and handle punctuation.
+- **Handle Emojis**: Remove, replace, or analyze sentiment based on emojis.
+- **Convert Dates**: Process Persian calendar dates into standard Gregorian format.
+- **Remove Unwanted Elements**: Strip out URLs, HTML tags, mentions, hashtags, and email addresses.
+- **Custom Task Configurations**: Use predefined configurations for tasks like sentiment analysis, translation, and topic modeling.
+- **Tokenization and Stopword Removal**: Tokenize text and remove language-specific stopwords.
+- **Language-Specific Enhancements**: Handle unique linguistic features such as Persian half-spaces or English contractions.
 
-### Step 2: Split Dataset (Optional)
-Use `separate_train_test_validation.py` to split the preprocessed dataset into train, validation, and test sets:
-```bash
-python separate_train_test_validation.py \
-  --input output_directory/cleaned_data_translation.csv \
-  --target Persian \
-  --train_ratio 0.7 \
-  --val_ratio 0.2 \
-  --test_ratio 0.1 \
-  --output_dir output_directory
-```
+### English Text Preprocessing
 
-#### Arguments:
-- `--input`: Path to the preprocessed file.
-- `--target`: The target column (e.g., `Persian` for translation).
-- `--train_ratio`, `--val_ratio`, `--test_ratio`: Ratios for dataset splitting.
-- `--output_dir`: Directory to save the train/val/test splits.
-
----
-
-### Step 3: Frequency Analysis (Optional)
-Analyze word and character frequencies using `character_word_count.py`:
 ```python
-from character_word_count import WordCharacterCount
+from morphopretext import EnglishTextPreprocessor
 
-# Example dataset
-data = ["Hello world!", "Welcome to preprocessing."]
+# Initialize the preprocessor
+english_preprocessor = EnglishTextPreprocessor(task="default")
 
-# Initialize the tool
-counter = WordCharacterCount(output_directory="output_directory")
+# Preprocess text example 1
+text = "This is a sample text with emojis 😊 and a URL: https://example.com"
+cleaned_text = english_preprocessor.clean_punctuation(text)
+print(cleaned_text)  # Output: This is a sample text with emojis 😊 and a URL https example com
 
-# Generate word frequency report
-word_freq = counter.word_count(data, file_name="example_word_frequency")
+# Preprocess text example 2
+text_with_html = "This is a <b>bold</b> statement."
+cleaned_html_text = english_preprocessor.remove_url_and_html(text_with_html)
+print(cleaned_html_text)  # Output: This is a bold statement.
 
-# Generate character frequency report
-char_freq = counter.character_count(data, file_name="example_char_frequency")
+# Preprocess text example 3
+text_with_emojis = "I love programming! 😊"
+emoji_handled_text = english_preprocessor.handle_emojis(text_with_emojis, strategy="replace")
+print(emoji_handled_text)  # Output: I love programming! EMOJI
+
+# Preprocess text example 4
+spelling_text = "Ths is a smple txt with erors."
+corrected_text = english_preprocessor.correct_spelling(spelling_text)
+print(corrected_text)  # Output: This is a sample text with errors.
+```
+
+### Persian Text Preprocessing
+
+```python
+from morphopretext import PersianTextPreprocessor
+
+# Initialize the preprocessor with a custom stopword file
+persian_preprocessor = PersianTextPreprocessor(stopword_file="stopwords.txt", task="default")
+
+# Preprocess text example 1
+persian_text = "این یک متن نمونه است که شامل تاریخ ۱۴۰۲/۰۳/۱۵ و علائم نگارشی است."
+cleaned_text = persian_preprocessor.remove_stopwords(persian_text)
+print(cleaned_text)  # Output: این متن نمونه شامل تاریخ ۱۴۰۲/۰۳/۱۵ علائم نگارشی است.
+
+# Preprocess text example 2
+persian_text_with_emojis = "این یک متن 😊 تست است"
+emoji_removed_text = persian_preprocessor.handle_emojis(persian_text_with_emojis, "remove")
+print(emoji_removed_text)  # Output: این یک متن تست است
+
+# Preprocess text example 3
+persian_text_with_half_space = "این‌ متن‌ تست‌ است"
+cleaned_half_space_text = persian_preprocessor.remove_half_space(persian_text_with_half_space)
+print(cleaned_half_space_text)  # Output: این متن تست است
+
+# Preprocess text example 4
+persian_date_text = "تاریخ امروز ۱۴۰۲/۰۵/۲۰ است"
+converted_date_text = persian_preprocessor.date_converter().handle_persian_dates(persian_date_text, convert_to_standard=True)
+print(converted_date_text)  # Output: تاریخ امروز 2023-08-11 است
 ```
 
 ---
 
 ## Project Structure
 
-After running the scripts, the directory structure will look like this:
-
-```plaintext
-.
-├── main.py                     # Main preprocessing script.
-├── english_text_preprocessor.py # English-specific preprocessing utilities.
-├── persian_text_preprocessor.py # Persian-specific preprocessing utilities.
-├── Dictionaries_En.py          # English dictionaries and mappings.
-├── Dictionaries_Fa.py          # Persian dictionaries and mappings.
-├── character_word_count.py     # Word and character frequency analysis tool.
-├── separate_train_test_validation.py # Dataset splitting script.
-├── stopwords.txt               # Persian stopword list.
-├── requirements.txt            # Dependencies list.
-├── translation_data.csv        # Sample input dataset.
-├── output_directory/           # Directory containing generated outputs.
-│   ├── cleaned_data_translation.csv   # Cleaned dataset (CSV format).
-│   ├── cleaned_data_translation.xlsx  # Cleaned dataset (Excel format).
-│   ├── train.csv                       # Training set.
-│   ├── validation.csv                  # Validation set.
-│   ├── test.csv                        # Test set.
-│   ├── example_word_frequency_WordsCount.csv    # Word frequency report (CSV).
-│   ├── example_char_frequency_CharactersCount.csv # Character frequency report (CSV).
-├── README.md                   # Project documentation.
+```
+MorphoPreText/
+├── morphotext/                    # Package directory
+│   ├── __init__.py                # Initialize the package
+│   ├── english_text_preprocessor.py
+│   ├── persian_text_preprocessor.py
+│   ├── Dictionaries_En.py
+│   ├── Dictionaries_Fa.py
+│   ├── stopwords.txt
+├── README.md                      # Project description
+├── setup.py                       # Packaging configuration
+├── requirements.txt               # Dependencies
+├── LICENSE                        # License information
 ```
 
 ---
 
-## Supported Tasks
+## Contributions
 
-1. **Translation**:
-   - Processes datasets with `English` and `Persian` columns.
-   - Retains minimal normalization to preserve translation context.
-
-2. **Sentiment Analysis**:
-   - Cleans data by removing emojis, punctuation, and stopwords.
-
-3. **Named Entity Recognition (NER)**:
-   - Retains entity-specific context while applying basic normalization.
-
-4. **Topic Modeling**:
-   - Removes stopwords and applies lemmatization for better topic clustering.
-
-5. **Spam Detection**:
-   - Prepares datasets for binary spam vs. non-spam classification.
-
-6. **Summarization**:
-   - Retains sentence structure and punctuation for summary generation.
-
-7. **Default Task**:
-   - Applies general-purpose text cleaning and normalization.
+Contributions are welcome! Please fork the repository and submit a pull request with your improvements or bug fixes.
 
 ---
 
-## Sample Input and Output
+## License
 
-### Input: `translation_data.csv`
-```csv
-English,Persian
-"Hello, world!", "سلام دنیا!"
-"This is an example.", "این یک مثال است."
-```
-
-### Preprocessed Output
-Saved in `output_directory/cleaned_data_translation.csv`:
-```csv
-English,Persian
-"hello world", "سلام دنیا"
-"this is an example", "این یک مثال است"
-```
-
-### Dataset Splits
-Saved in `output_directory/`:
-- `train.csv`
-- `validation.csv`
-- `test.csv`
+This project is licensed under the terms of the MIT License. See the `LICENSE` file for details.
 
 ---
 
-## Customization
+## Repository
 
-### Task Configurations
-- Modify preprocessing settings in `english_text_preprocessor.py` and `persian_text_preprocessor.py`.
-- Adjust configurations for punctuation, stopword removal, or specific tasks.
+For more details, visit: https://github.com/ghaskari/MorphoPreText
 
----
