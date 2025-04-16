@@ -11,3 +11,5 @@ Thumbs.db
 # Virtual environment
 .venv/
 .env/
+
+.idea
