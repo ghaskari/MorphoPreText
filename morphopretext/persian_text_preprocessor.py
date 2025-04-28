@@ -4,7 +4,7 @@ import unicodedata
 import re
 import jdatetime
 from parsivar import Normalizer, Tokenizer, FindStems
-from Dictionaries_Fa import (
+from .Dictionaries_Fa import (
     arabic_dict,
     num_dict,
     sign_dict_fa_phase_one,

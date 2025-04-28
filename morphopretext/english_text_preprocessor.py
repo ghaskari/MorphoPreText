@@ -4,14 +4,23 @@ import emoji
 from spellchecker import SpellChecker
 import spacy
 
-from Dictionaries_En import (
+from .Dictionaries_En import (
     english_dict,
     contractions_dict,
     sign_dict_en,
     special_char_dict,
     month_dict,
 )
+# ─── work around Parsivar’s `from collections import Iterable` on Py3.10+ ──
+import collections
+import collections.abc
+collections.Iterable = collections.abc.Iterable
+# ─────────────
+import spacy
+from spacy.cli import download
 
+download("en_core_web_sm")
+nlp = spacy.load("en_core_web_sm")
 
 class EnglishTextPreprocessor:
     def __init__(self, task="default"):
@@ -158,13 +167,16 @@ class EnglishTextPreprocessor:
         tokens = re.findall(r"[\w']+|[.,!?;]", text)
         misspelled_words = self.spellchecker.unknown(tokens)
 
+
         for token in tokens:
+
             if token in misspelled_words:
-                corrected_text.append(self.spellchecker.correction(token))
+                suggestion = self.spellchecker.correction(token)
+                corrected_text.append(suggestion if suggestion is not None else token)
             else:
                 corrected_text.append(token)
 
-        return " ".join(corrected_text).replace(" ", " ")
+        return " ".join(corrected_text)
 
     def handle_emojis(self, text, strategy):
         if not isinstance(text, str):
@@ -245,16 +257,25 @@ class EnglishTextPreprocessor:
         return result
 
     def remove_url_and_html(self, text):
+        if not isinstance(text, str):
+            text = str(text)
+
         text = re.sub(r"http[s]?://\S+", "", text)  # Remove URLs
         text = re.sub(r"<.*?>", "", text)  # Remove HTML tags
         return self.clean_extra_spaces(text)
 
     def remove_elements(self, text):
+        if not isinstance(text, str):
+            text = str(text)
+
         text = re.sub(r"@\w+", "", text)  # Remove mentions
         text = re.sub(r"#\w+", "", text)  # Remove hashtags
         return self.clean_extra_spaces(text)
 
     def clean_punctuation(self, text):
+        if not isinstance(text, str):
+            text = str(text)
+
         return re.sub(r"[^\w\s]", "", text)
 
     def clean_extra_spaces(self, text):
