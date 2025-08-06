@@ -1,7 +1,7 @@
 import re
 import unicodedata
 import emoji
-from spellchecker import SpellChecker
+# from spellchecker import SpellChecker
 import spacy
 
 from .Dictionaries_En import (
@@ -24,7 +24,7 @@ nlp = spacy.load("en_core_web_sm")
 
 class EnglishTextPreprocessor:
     def __init__(self, task="default"):
-        self.spellchecker = SpellChecker()
+        # self.spellchecker = SpellChecker()
         self.english_dict = english_dict
         self.contractions_dict = contractions_dict
         self.sign_dict_en = sign_dict_en
@@ -40,7 +40,7 @@ class EnglishTextPreprocessor:
                 "apply_normalization": True,
                 "remove_accents": True,
                 "handle_emojis": "replace",  # Options: "remove", "replace", "sentiment", None
-                "correct_spelling": True,
+                # "correct_spelling": True,
                 "remove_url_html": True,
                 "remove_elements": True,
                 "apply_dictionary_replacements": True,
@@ -55,7 +55,7 @@ class EnglishTextPreprocessor:
                 "apply_normalization": True,
                 "remove_accents": False,
                 "handle_emojis": None,
-                "correct_spelling": False,
+                # "correct_spelling": False,
                 "remove_url_html": True,
                 "remove_elements": True,
                 "apply_dictionary_replacements": True,
@@ -70,7 +70,7 @@ class EnglishTextPreprocessor:
                 "apply_normalization": True,
                 "remove_accents": True,
                 "handle_emojis": "sentiment",
-                "correct_spelling": True,
+                # "correct_spelling": True,
                 "remove_url_html": True,
                 "remove_elements": True,
                 "apply_dictionary_replacements": True,
@@ -85,7 +85,7 @@ class EnglishTextPreprocessor:
                 "apply_normalization": True,
                 "remove_accents": True,
                 "handle_emojis": 'remove',
-                "correct_spelling": False,
+                # "correct_spelling": False,
                 "remove_url_html": True,
                 "remove_elements": True,
                 "apply_dictionary_replacements": True,
@@ -100,7 +100,7 @@ class EnglishTextPreprocessor:
                 "apply_normalization": True,
                 "remove_accents": True,
                 "handle_emojis": None,
-                "correct_spelling": False,
+                # "correct_spelling": False,
                 "remove_url_html": True,
                 "remove_elements": True,
                 "apply_dictionary_replacements": True,
@@ -115,7 +115,7 @@ class EnglishTextPreprocessor:
                 "apply_normalization": True,
                 "remove_accents": True,
                 "handle_emojis": None,
-                "correct_spelling": True,
+                # "correct_spelling": True,
                 "remove_url_html": True,
                 "remove_elements": True,
                 "apply_dictionary_replacements": True,
@@ -130,7 +130,7 @@ class EnglishTextPreprocessor:
                 "apply_normalization": True,
                 "remove_accents": True,
                 "handle_emojis": None,
-                "correct_spelling": False,
+                # "correct_spelling": False,
                 "remove_url_html": True,
                 "remove_elements": True,
                 "apply_dictionary_replacements": True,
@@ -162,21 +162,21 @@ class EnglishTextPreprocessor:
     def remove_accents(self, text):
         return "".join(c for c in unicodedata.normalize("NFKD", text) if not unicodedata.combining(c))
 
-    def correct_spelling(self, text):
-        corrected_text = []
-        tokens = re.findall(r"[\w']+|[.,!?;]", text)
-        misspelled_words = self.spellchecker.unknown(tokens)
-
-
-        for token in tokens:
-
-            if token in misspelled_words:
-                suggestion = self.spellchecker.correction(token)
-                corrected_text.append(suggestion if suggestion is not None else token)
-            else:
-                corrected_text.append(token)
-
-        return " ".join(corrected_text)
+    # def correct_spelling(self, text):
+    #     corrected_text = []
+    #     tokens = re.findall(r"[\w']+|[.,!?;]", text)
+    #     misspelled_words = self.spellchecker.unknown(tokens)
+    #
+    #
+    #     for token in tokens:
+    #
+    #         if token in misspelled_words:
+    #             suggestion = self.spellchecker.correction(token)
+    #             corrected_text.append(suggestion if suggestion is not None else token)
+    #         else:
+    #             corrected_text.append(token)
+    #
+    #     return " ".join(corrected_text)
 
     def handle_emojis(self, text, strategy):
         if not isinstance(text, str):
@@ -342,8 +342,8 @@ class EnglishTextPreprocessor:
         if config["remove_accents"]:
             column = column.apply(self.remove_accents)
 
-        if config["correct_spelling"]:
-            column = column.apply(self.correct_spelling)
+        # if config["correct_spelling"]:
+        #     column = column.apply(self.correct_spelling)
 
         if config["remove_stopwords"]:
             column = column.apply(lambda x: " ".join(self.remove_stopwords(x.split())))

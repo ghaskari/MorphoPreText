@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="MorphoPreText",
-    version="0.1.2",
+    version="0.2.0",
     author="Ghazal Askari",
     author_email="g.askari1037@gmail.com",
     description="A bilingual text preprocessing toolkit for English and Persian.",
